@@ -1,0 +1,53 @@
+ 
+<html>
+<head>	 
+	<script type="text/javascript" src="/static/js/raphael-min.js" ></script> 
+	<script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+	<script type="text/javascript" src="/static/js/jsphylosvg.js"></script> 
+	<!-- unitip -->
+	<link rel="stylesheet" type="text/css" href="/static/js/unitip/css/unitip.css" > 
+	<script type="text/javascript" src="/static/js/unitip/js/unitip.js"></script> 	
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.3.min.js" ></script>
+	  
+	<script type="text/javascript">
+	window.onload = function(){
+		YUI().use('oop', 'json-stringify', 'io-base', 'event', 'event-delegate', function(Y){
+			var uri = "/static/tree_labeled.xml";			
+			function complete(id, o, args) {
+				var data = o.responseXML; // Response data.
+				var dataObject = {
+							xml: data,
+							fileSource: true
+						};		
+				Smits.PhyloCanvas.Render.Style.text["font-size"] = 16;
+				phylocanvas = new Smits.PhyloCanvas(
+					dataObject,
+					'svgCanvas', 
+					2500, 2500,
+					'circular'									
+				);
+				init(); //unitip
+				var svgSource = phylocanvas.getSvgSource();
+	            if(svgSource){
+	                $('#download-link')[0].href = "data:image/svg+xml," + svgSource;
+	                $('#svg')[0].text=svgSource
+	            }
+			};
+			Y.on('io:complete', complete, Y);
+			var request = Y.io(uri);
+		});
+	};
+	</script>
+</head>
+<body>
+	<div id="download-option" style="">
+		Save the tree (SVG): <br/>
+		<a id="download-link" href="#">Right-click and select "Save as.."</a>
+	</div>
+	<div id="svg">
+		
+	</div>
+	
+	<div id="svgCanvas"> </div>
+</body>
+</html>		
